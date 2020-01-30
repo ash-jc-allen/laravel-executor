@@ -2,6 +2,7 @@
 
 namespace AshAllenDesign\LaravelExecutor\Providers;
 
+use AshAllenDesign\LaravelExecutor\Classes\Executor;
 use Illuminate\Support\ServiceProvider;
 
 class LaravelExecutorProvider extends ServiceProvider
