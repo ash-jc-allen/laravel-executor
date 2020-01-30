@@ -1,0 +1,17 @@
+<?php
+
+namespace DummyNamespace;
+
+use AshAllenDesign\LaravelExecutor\Contracts\ExecutorDefinition;
+
+class DummyClass implements ExecutorDefinition
+{
+    /**
+     * Define the commands here that are to be run when
+     * this executor class is called.
+     */
+    public function run(): void
+    {
+
+    }
+}

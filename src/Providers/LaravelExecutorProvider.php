@@ -2,6 +2,7 @@
 
 namespace AshAllenDesign\LaravelExecutor\Providers;
 
+use AshAllenDesign\LaravelExecutor\Console\Commands\ExecutorMakeCommand;
 use AshAllenDesign\LaravelExecutor\Classes\Executor;
 use Illuminate\Support\ServiceProvider;
 
@@ -24,5 +25,10 @@ class LaravelExecutorProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        if ($this->app->runningInConsole()) {
+            $this->commands([
+                ExecutorMakeCommand::class,
+            ]);
+        }
     }
 }

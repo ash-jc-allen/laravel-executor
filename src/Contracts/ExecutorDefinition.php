@@ -2,7 +2,7 @@
 
 namespace AshAllenDesign\LaravelExecutor\Contracts;
 
-interface ExecutorCommand
+interface ExecutorDefinition
 {
     /**
      * Define the commands here that are to be run when
