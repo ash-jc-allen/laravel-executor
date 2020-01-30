@@ -1,0 +1,51 @@
+{
+  "name": "ashallendesign/laravel-executor",
+  "description": "Configurable code that can be ran when installing or updating your web app.",
+  "type": "library",
+  "homepage": "https://github.com/ash-jc-allen/laravel-executor",
+  "keywords": [
+    "ashallendesign",
+    "laravel",
+    "laravel-executor"
+  ],
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Ash Allen",
+      "email": "mail@ashallendesign.co.uk"
+    }
+  ],
+  "require": {
+    "php": "^7.2",
+    "nesbot/carbon": "~2.0",
+    "guzzlehttp/guzzle": "^6.3",
+    "illuminate/container": "^5.8|^6.0",
+    "illuminate/cache": "^5.8|^6.0",
+    "ext-json": "*"
+  },
+  "require-dev": {
+    "mockery/mockery": "^1.0",
+    "orchestra/testbench": "^3.8 || ^4.0",
+    "phpunit/phpunit": "^8.2"
+  },
+  "autoload": {
+    "psr-4": {
+      "AshAllenDesign\\LaravelExecutor\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "AshAllenDesign\\LaravelExecutor\\Tests\\": "tests/"
+    }
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "AshAllenDesign\\LaravelExecutor\\Providers\\LaravelExecutorProvider"
+      ],
+      "aliases": {
+        "Executor": "AshAllenDesign\\LaravelExecutor\\Facades\\Executor"
+      }
+    }
+  }
+}
