@@ -7,6 +7,11 @@ use Symfony\Component\Process\Process;
 
 class Executor
 {
+    /**
+     * The output from running any commands.
+     *
+     * @var string
+     */
     private static $output = '';
 
     /**
