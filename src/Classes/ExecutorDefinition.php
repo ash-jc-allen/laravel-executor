@@ -5,7 +5,7 @@ namespace AshAllenDesign\LaravelExecutor\Classes;
 use Illuminate\Support\Facades\Artisan;
 use Symfony\Component\Process\Process;
 
-class Executor
+class ExecutorDefinition
 {
     /**
      * Run an Artisan command and return the output.

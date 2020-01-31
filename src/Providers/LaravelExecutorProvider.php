@@ -2,8 +2,8 @@
 
 namespace AshAllenDesign\LaravelExecutor\Providers;
 
+use AshAllenDesign\LaravelExecutor\Classes\ExecutorDefinition;
 use AshAllenDesign\LaravelExecutor\Console\Commands\ExecutorMakeCommand;
-use AshAllenDesign\LaravelExecutor\Classes\Executor;
 use Illuminate\Support\ServiceProvider;
 
 class LaravelExecutorProvider extends ServiceProvider
@@ -15,7 +15,7 @@ class LaravelExecutorProvider extends ServiceProvider
      */
     public function register(): void
     {
-        $this->app->alias(Executor::class, 'laravel-executor');
+        $this->app->alias(ExecutorDefinition::class, 'laravel-executor');
     }
 
     /**
