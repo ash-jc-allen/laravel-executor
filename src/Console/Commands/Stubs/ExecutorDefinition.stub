@@ -2,15 +2,17 @@
 
 namespace DummyNamespace;
 
-use AshAllenDesign\LaravelExecutor\Contracts\ExecutorDefinition;
+use AshAllenDesign\LaravelExecutor\Classes\ExecutorDefinition;
 
-class DummyClass implements ExecutorDefinition
+class DummyClass extends ExecutorDefinition
 {
     /**
      * Define the commands here that are to be run when
      * this executor class is called.
+     *
+     * @return void
      */
-    public function run(): void
+    public function definition(): void
     {
 
     }
