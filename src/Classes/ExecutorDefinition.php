@@ -25,13 +25,13 @@ abstract class ExecutorDefinition
      * Run the commands defined that are in the
      * executor definition.
      */
-    public function run()
+    public function run(): string
     {
         $this->executor->resetOutput();
 
         $this->definition();
 
-        // TODO Check in the class if the output should be returned.
+        return $this->executor->getOutput();
     }
 
     /**
