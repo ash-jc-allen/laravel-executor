@@ -8,6 +8,8 @@ use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
 use InvalidArgumentException;
+use ReflectionClass;
+use ReflectionException;
 use Symfony\Component\Console\Input\InputOption;
 
 class ExecutorMakeCommand extends GeneratorCommand
@@ -38,7 +40,7 @@ class ExecutorMakeCommand extends GeneratorCommand
      *
      * @return string
      */
-    protected function getStub()
+    protected function getStub(): string
     {
         $stub = '/Stubs/ExecutorDefinition.stub';
 
@@ -49,9 +51,9 @@ class ExecutorMakeCommand extends GeneratorCommand
      * Determine if the class already exists.
      *
      * @param  string  $rawName
-     * @return bool
+     * @return string
      */
-    protected function alreadyExists($rawName)
+    protected function alreadyExists($rawName): string
     {
         return class_exists($this->rootNamespace().'Executor\\'.$rawName);
     }
@@ -62,9 +64,20 @@ class ExecutorMakeCommand extends GeneratorCommand
      * @param  string  $rootNamespace
      * @return string
      */
-    protected function getDefaultNamespace($rootNamespace)
+    protected function getDefaultNamespace($rootNamespace): string
     {
         return $rootNamespace.'\Executor';
+    }
+
+    /**
+     * Get the default namespace where the command
+     * belongs.
+     *
+     * @return string
+     */
+    protected function defaultCommandNamespace(): string
+    {
+        return 'App\Console\Commands\\';
     }
 
     /**
@@ -75,9 +88,9 @@ class ExecutorMakeCommand extends GeneratorCommand
      *
      * @throws ExecutorCommandException
      * @throws FileNotFoundException
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
-    protected function buildClass($name)
+    protected function buildClass($name): string
     {
         if (preg_match('([^A-Za-z0-9_/\\\\])', $name)) {
             throw new InvalidArgumentException('Executor class name contains invalid characters.');
@@ -97,7 +110,7 @@ class ExecutorMakeCommand extends GeneratorCommand
      *
      * @return array
      */
-    protected function getOptions()
+    protected function getOptions(): array
     {
         return [
             ['command', 'c', InputOption::VALUE_NONE, 'Generate a command for running the executor class.'],
@@ -105,29 +118,39 @@ class ExecutorMakeCommand extends GeneratorCommand
     }
 
     /**
+     * Create a boilerplate command that can be used to
+     * run the executor class in the console.
+     *
      * @throws ExecutorCommandException
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
-    protected function createExecutorCommandClass()
+    protected function createExecutorCommandClass(): void
     {
         $commandClassName = 'Run'.$this->argument('name').'Executor';
         $commandSignature = 'executor:'.Str::kebab($this->argument('name'));
+        $commandFullClassName = $this->laravel->getNamespace().'Console\Commands\\'.$commandClassName;
 
-        if (!class_exists($commandClassName)) {
-            $this->call('make:command', [
-                'name'      => $commandClassName,
-                '--command' => $commandSignature
-            ]);
-        }
+        $this->call('make:command', [
+            'name'      => $commandClassName,
+            '--command' => $commandSignature
+        ]);
 
-        $commandFullClassName = $this->rootNamespace().'Console\Commands\\'.$commandClassName;
+        $commandFilePath = (new ReflectionClass($commandFullClassName))->getFileName();
 
-        $commandFilePath = (new \ReflectionClass($commandFullClassName))->getFileName();
-
-        if (!File::exists($commandFilePath) && File::isReadable($commandFilePath) && File::isWritable($commandFilePath)) {
+        if (!File::exists($commandFilePath) || !File::isReadable($commandFilePath) || !File::isWritable($commandFilePath)) {
             throw new ExecutorCommandException('The command file either does not exist or cannot be written to.');
         }
 
+        $this->replaceCommandClassContents($commandFilePath);
+    }
+
+    /**
+     * Replace the body of the command class.
+     *
+     * @param  string  $commandFilePath
+     */
+    private function replaceCommandClassContents(string $commandFilePath): void
+    {
         $fileContents = File::get($commandFilePath);
 
         $fileContents = $this->replaceDescription($fileContents);
@@ -143,7 +166,7 @@ class ExecutorMakeCommand extends GeneratorCommand
      * @param  string  $fileContents
      * @return string
      */
-    protected function replaceDescription(string $fileContents): string
+    private function replaceDescription(string $fileContents): string
     {
         $find = 'protected $description = \'Command description\';';
         $replaceWith = 'protected $description = \'Run the '.$this->argument('name').' executor class.\';';
@@ -168,7 +191,7 @@ class ExecutorMakeCommand extends GeneratorCommand
         );
 
         $find = "//";
-        $replaceWith = "(new {$executorClass}())->run();";
+        $replaceWith = "echo (new {$executorClass}())->run();";
 
         return str_replace($find, $replaceWith, $fileContents);
     }
