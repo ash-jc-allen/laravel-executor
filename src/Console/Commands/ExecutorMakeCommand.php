@@ -7,6 +7,7 @@ use Illuminate\Console\GeneratorCommand;
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
+use InvalidArgumentException;
 use Symfony\Component\Console\Input\InputOption;
 
 class ExecutorMakeCommand extends GeneratorCommand
@@ -78,7 +79,9 @@ class ExecutorMakeCommand extends GeneratorCommand
      */
     protected function buildClass($name)
     {
-        // TODO Validate that the executor class name is valid.
+        if (preg_match('([^A-Za-z0-9_/\\\\])', $name)) {
+            throw new InvalidArgumentException('Executor class name contains invalid characters.');
+        }
 
         if ($this->option('command')) {
             $this->createExecutorCommandClass();
