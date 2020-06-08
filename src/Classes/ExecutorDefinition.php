@@ -2,6 +2,8 @@
 
 namespace AshAllenDesign\LaravelExecutor\Classes;
 
+use Symfony\Component\Process\Process;
+
 abstract class ExecutorDefinition
 {
     /**
@@ -31,6 +33,16 @@ abstract class ExecutorDefinition
 
         $this->definition();
 
+        foreach($this->executor->commandsToRun() as $command) {
+            $commandArray = explode(' ', $command);
+
+            $process = new Process($commandArray);
+
+            $process->run(function ($type, $buffer) {
+                echo $buffer;
+            });
+        }
+
         return $this->executor->getOutput();
     }
 
@@ -38,7 +50,7 @@ abstract class ExecutorDefinition
      * Define the commands here that are to be run when
      * this executor class is called.
      *
-     * @return void
+     * @return Executor
      */
-    abstract public function definition(): void;
+    abstract public function definition(): Executor;
 }

@@ -12,39 +12,40 @@ class Executor
      *
      * @var string
      */
-    private static $output = '';
+    private $output = '';
+
+    /**
+     * An array containing all of the commands that should
+     * be run.
+     *
+     * @var array
+     */
+    private $commandsToRun = [];
 
     /**
      * Run an Artisan command and return the output.
      *
      * @param  string  $command
-     * @return string
+     * @return $this
      */
-    public function runArtisan(string $command): string
+    public function runArtisan(string $command): self
     {
-        Artisan::call($command);
+        $this->commandsToRun[] = 'php artisan '.$command;
 
-        $this->setOutput($this->getOutput().Artisan::output());
-
-        return Artisan::output();
+        return $this;
     }
 
     /**
      * Run a command on the system.
      *
      * @param  string  $command
-     * @return string
+     * @return $this
      */
-    public function runExternal(string $command): string
+    public function runExternal(string $command): self
     {
-        $commandArray = explode(' ', $command);
+        $this->commandsToRun[] = $command;
 
-        $process = new Process($commandArray);
-        $process->run();
-
-        $this->setOutput($this->getOutput().$process->getOutput());
-
-        return $process->getOutput();
+        return $this;
     }
 
     /**
@@ -55,7 +56,7 @@ class Executor
      */
     public function getOutput()
     {
-        return self::$output;
+        return $this->output;
     }
 
     /**
@@ -80,8 +81,19 @@ class Executor
      */
     public function setOutput(string $output)
     {
-        self::$output = $output;
+        $this->output = $output;
 
         return $this;
+    }
+
+    /**
+     * Return the array containing the commands that
+     * should be run.
+     *
+     * @return array
+     */
+    public function commandsToRun(): array
+    {
+        return $this->commandsToRun;
     }
 }
