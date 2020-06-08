@@ -198,6 +198,9 @@ class AppUpdate extends Executor
 }
 ```
 
+Assuming that the above Executor class is still using the default command signature, each time the branch is pulled down,
+the following command could be run: ``` php artisan executor:app-update ```.
+
 ## Security
 
 If you find any security related issues, please contact me directly at [mail@ashallendesign.co.uk](mailto:mail@ashallendesign.co.uk) to report it.
