@@ -2,6 +2,7 @@
 
 namespace DummyNamespace;
 
+use AshAllenDesign\LaravelExecutor\Classes\Executor;
 use AshAllenDesign\LaravelExecutor\Classes\ExecutorDefinition;
 
 class DummyClass extends ExecutorDefinition
@@ -10,10 +11,10 @@ class DummyClass extends ExecutorDefinition
      * Define the commands here that are to be run when
      * this executor class is called.
      *
-     * @return void
+     * @return Executor
      */
-    public function definition(): void
+    public function definition(): Executor
     {
-
+        return $this->executor->runArtisan('');
     }
 }
