@@ -24,23 +24,32 @@ abstract class ExecutorDefinition
     }
 
     /**
-     * Run the commands defined that are in the
-     * executor definition.
+     * Run the commands defined that are in the executor
+     * definition. If $consoleMode is set to true, the
+     * command's output will displayed in realtime.
+     * This is useful for long running commands.
+     *
+     * @param  bool  $consoleMode
+     * @return string
      */
-    public function run(): string
+    public function run(bool $consoleMode = false): string
     {
         $this->executor->resetOutput();
 
         $this->definition();
 
-        foreach($this->executor->commandsToRun() as $command) {
+        foreach ($this->executor->commandsToRun() as $command) {
             $commandArray = explode(' ', $command);
 
             $process = new Process($commandArray);
 
-            $process->run(function ($type, $buffer) {
-                echo $buffer;
+            $process->run(function ($type, $buffer) use ($consoleMode) {
+                if ($consoleMode) {
+                    echo $buffer;
+                }
             });
+
+            $this->executor->setOutput($this->executor->getOutput().$process->getOutput());
         }
 
         return $this->executor->getOutput();
