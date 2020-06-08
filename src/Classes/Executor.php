@@ -2,9 +2,6 @@
 
 namespace AshAllenDesign\LaravelExecutor\Classes;
 
-use Illuminate\Support\Facades\Artisan;
-use Symfony\Component\Process\Process;
-
 class Executor
 {
     /**
