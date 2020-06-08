@@ -2,7 +2,9 @@
 
 namespace AshAllenDesign\LaravelExecutor\Classes;
 
-class Executor
+use Symfony\Component\Process\Process;
+
+abstract class Executor
 {
     /**
      * The output from running any commands.
@@ -18,6 +20,46 @@ class Executor
      * @var array
      */
     private $commandsToRun = [];
+
+    /**
+     * Define the commands here that are to be run when
+     * this executor class is called.
+     *
+     * @return Executor
+     */
+    abstract public function definition(): Executor;
+
+    /**
+     * Run the commands defined that are in the executor
+     * definition. If $consoleMode is set to true, the
+     * command's output will displayed in realtime.
+     * This is useful for long running commands.
+     *
+     * @param  bool  $consoleMode
+     * @return string
+     */
+    public function run(bool $consoleMode = false): string
+    {
+        $this->resetOutput();
+
+        $this->definition();
+
+        foreach ($this->commandsToRun() as $command) {
+            $commandArray = explode(' ', $command);
+
+            $process = new Process($commandArray);
+
+            $process->run(function ($type, $buffer) use ($consoleMode) {
+                if ($consoleMode) {
+                    echo $buffer;
+                }
+            });
+
+            $this->setOutput($this->getOutput().$process->getOutput());
+        }
+
+        return $this->getOutput();
+    }
 
     /**
      * Run an Artisan command and return the output.

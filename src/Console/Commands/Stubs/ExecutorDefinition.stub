@@ -3,9 +3,8 @@
 namespace DummyNamespace;
 
 use AshAllenDesign\LaravelExecutor\Classes\Executor;
-use AshAllenDesign\LaravelExecutor\Classes\ExecutorDefinition;
 
-class DummyClass extends ExecutorDefinition
+class DummyClass extends Executor
 {
     /**
      * Define the commands here that are to be run when
@@ -15,6 +14,6 @@ class DummyClass extends ExecutorDefinition
      */
     public function definition(): Executor
     {
-        return $this->executor->runArtisan('');
+        return $this->runArtisan('');
     }
 }
