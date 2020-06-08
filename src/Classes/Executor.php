@@ -32,12 +32,14 @@ class Executor
     /**
      * Run a command on the system.
      *
-     * @param  array  $command
+     * @param  string  $command
      * @return string
      */
-    public function runExternal(array $command): string
+    public function runExternal(string $command): string
     {
-        $process = new Process($command);
+        $commandArray = explode(' ', $command);
+
+        $process = new Process($commandArray);
         $process->run();
 
         $this->setOutput($this->getOutput().$process->getOutput());
