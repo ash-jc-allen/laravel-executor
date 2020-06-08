@@ -45,9 +45,19 @@ abstract class Executor
         $this->definition();
 
         foreach ($this->commandsToRun() as $command) {
-            $commandArray = explode(' ', $command);
+            if ($command instanceof \Closure) {
+                $output = call_user_func($command);
 
-            $process = new Process($commandArray);
+                if ($consoleMode) {
+                    echo $output;
+                }
+
+                $this->setOutput($this->getOutput().$output);
+
+                continue;
+            }
+
+            $process = new Process(explode(' ', $command));
 
             $process->run(function ($type, $buffer) use ($consoleMode) {
                 if ($consoleMode) {
@@ -83,6 +93,19 @@ abstract class Executor
     public function runExternal(string $command): self
     {
         $this->commandsToRun[] = $command;
+
+        return $this;
+    }
+
+    /**
+     * Run a closure on the system.
+     *
+     * @param  \Closure  $closure
+     * @return $this
+     */
+    public function runClosure(\Closure $closure): self
+    {
+        $this->commandsToRun[] = $closure;
 
         return $this;
     }
