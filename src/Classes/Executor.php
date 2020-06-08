@@ -42,37 +42,58 @@ abstract class Executor
     {
         $this->resetOutput();
 
-        $this->definition();
-
         foreach ($this->commandsToRun() as $command) {
             if ($command instanceof \Closure) {
-                $output = call_user_func($command);
-
-                if ($consoleMode) {
-                    echo $output;
-                }
-
-                $this->setOutput($this->getOutput().$output);
+                $this->handleClosure($command, $consoleMode);
 
                 continue;
             }
 
-            $process = new Process(explode(' ', $command));
-
-            $process->run(function ($type, $buffer) use ($consoleMode) {
-                if ($consoleMode) {
-                    echo $buffer;
-                }
-            });
-
-            $this->setOutput($this->getOutput().$process->getOutput());
+            $this->handleConsoleCommand($command, $consoleMode);
         }
 
         return $this->getOutput();
     }
 
     /**
-     * Run an Artisan command and return the output.
+     * Handle the running of a closure.
+     *
+     * @param  \Closure  $closureToRun
+     * @param  bool  $consoleMode
+     */
+    private function handleClosure(\Closure $closureToRun, bool $consoleMode): void
+    {
+        $output = call_user_func($closureToRun);
+
+        if ($consoleMode) {
+            echo $output;
+        }
+
+        $this->setOutput($this->getOutput().$output);
+    }
+
+    /**
+     * Handle the running of a console command.
+     *
+     * @param  string  $commandToRun
+     * @param  bool  $consoleMode
+     */
+    private function handleConsoleCommand(string $commandToRun, bool $consoleMode): void
+    {
+        $process = new Process(explode(' ', $commandToRun));
+
+        $process->run(function ($type, $buffer) use ($consoleMode) {
+            if ($consoleMode) {
+                echo $buffer;
+            }
+        });
+
+        $this->setOutput($this->getOutput().$process->getOutput());
+    }
+
+    /**
+     * Add an Artisan command to the queue of items that
+     * should be executed.
      *
      * @param  string  $command
      * @return $this
@@ -85,7 +106,8 @@ abstract class Executor
     }
 
     /**
-     * Run a command on the system.
+     * Add a command (external to Laravel) to the queue of
+     * items that should be executed.
      *
      * @param  string  $command
      * @return $this
@@ -98,7 +120,8 @@ abstract class Executor
     }
 
     /**
-     * Run a closure on the system.
+     * Add a closure to the queue of items that should be
+     * executed.
      *
      * @param  \Closure  $closure
      * @return $this
@@ -150,12 +173,16 @@ abstract class Executor
 
     /**
      * Return the array containing the commands that
-     * should be run.
+     * should be run. We do this by calling the
+     * 'definition' method specified in the
+     * Executor child class.
      *
      * @return array
      */
     public function commandsToRun(): array
     {
+        $this->definition();
+
         return $this->commandsToRun;
     }
 }
