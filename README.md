@@ -21,6 +21,7 @@
         - [Adding an Artisan Command](#adding-an-artisan-command)
         - [Adding a Command](#adding-a-command)
         - [Adding a Closure](#adding-a-closure)
+        - [Adding Desktop Notifications](#adding-desktop-notifications)
     - [Running the Executor Definitions](#running-the-executor-definitions)
         - [Running via the Console](#running-via-the-console)
         - [Running Manually](#running-manually)
