@@ -33,7 +33,7 @@ abstract class Executor
      *
      * @return Executor
      */
-    abstract public function definition(): Executor;
+    abstract public function definition(): self;
 
     /**
      * Run the commands defined that are in the executor

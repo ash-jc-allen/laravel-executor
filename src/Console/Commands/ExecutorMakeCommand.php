@@ -132,12 +132,12 @@ class ExecutorMakeCommand extends GeneratorCommand
 
         $this->call('make:command', [
             'name'      => $commandClassName,
-            '--command' => $commandSignature
+            '--command' => $commandSignature,
         ]);
 
         $commandFilePath = (new ReflectionClass($commandFullClassName))->getFileName();
 
-        if (!File::exists($commandFilePath) || !File::isReadable($commandFilePath) || !File::isWritable($commandFilePath)) {
+        if (! File::exists($commandFilePath) || ! File::isReadable($commandFilePath) || ! File::isWritable($commandFilePath)) {
             throw new ExecutorCommandException('The command file either does not exist or cannot be written to.');
         }
 
@@ -187,10 +187,10 @@ class ExecutorMakeCommand extends GeneratorCommand
         $executorClass = str_replace(
             '\\\\',
             '\\',
-            "\\".$this->getDefaultNamespace($this->rootNamespace()).'\\'.$this->argument('name')
+            '\\'.$this->getDefaultNamespace($this->rootNamespace()).'\\'.$this->argument('name')
         );
 
-        $find = "//";
+        $find = '//';
         $replaceWith = "(new {$executorClass}())->run(true);";
 
         return str_replace($find, $replaceWith, $fileContents);
