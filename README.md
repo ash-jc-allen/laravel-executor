@@ -227,7 +227,8 @@ class AppUpdate extends Executor
 {
     public function definition(): Executor
     {
-        return $this->runExternal('composer install')
+        return $this->simpleDesktopNotification('Starting Executor', 'Starting the AppUpdate Executor.')
+                    ->runExternal('composer install')
                     ->runArtisan('migrate')
                     ->runArtisan('cache:clear');
     }
