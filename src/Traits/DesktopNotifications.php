@@ -9,6 +9,14 @@ use ReflectionClass;
 trait DesktopNotifications
 {
     /**
+     * The path to the Laravel Executor logo. This can be
+     * used to display the logo in the notifications.
+     *
+     * @var string
+     */
+    private $logoPath = __DIR__.'/../../resources/img/logo.png';
+
+    /**
      * Add a desktop notification to the Executor queue.
      *
      * @param  Notification  $notification
@@ -35,7 +43,7 @@ trait DesktopNotifications
         $notification = (new Notification())
             ->setTitle($title)
             ->setBody($body)
-            ->setIcon(__DIR__.'/path/to/your/icon.png');
+            ->setIcon($this->logoPath);
 
         $this->desktopNotification($notification);
 
@@ -68,6 +76,6 @@ trait DesktopNotifications
         return (new Notification())
             ->setTitle('Executor complete!')
             ->setBody('The '.$executorName.' executor has been run successfully.')
-            ->setIcon(__DIR__.'/path/to/your/icon.png');
+            ->setIcon($this->logoPath);
     }
 }
