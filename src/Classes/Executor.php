@@ -2,10 +2,16 @@
 
 namespace AshAllenDesign\LaravelExecutor\Classes;
 
+use AshAllenDesign\LaravelExecutor\Traits\DesktopNotifications;
+use Closure;
+use Joli\JoliNotif\Notification;
+use ReflectionException;
 use Symfony\Component\Process\Process;
 
 abstract class Executor
 {
+    use DesktopNotifications;
+
     /**
      * The output from running any commands.
      *
@@ -37,19 +43,30 @@ abstract class Executor
      *
      * @param  bool  $consoleMode
      * @return string
+     * @throws ReflectionException
      */
     public function run(bool $consoleMode = false): string
     {
         $this->resetOutput();
 
         foreach ($this->commandsToRun() as $command) {
-            if ($command instanceof \Closure) {
+            if ($command instanceof Closure) {
                 $this->handleClosure($command, $consoleMode);
 
                 continue;
             }
 
+            if ($command instanceof Notification) {
+                $this->displayNotification($command);
+
+                continue;
+            }
+
             $this->handleConsoleCommand($command, $consoleMode);
+        }
+
+        if ($consoleMode) {
+            $this->displayNotification($this->executorCompleteNotification());
         }
 
         return $this->getOutput();
@@ -58,10 +75,10 @@ abstract class Executor
     /**
      * Handle the running of a closure.
      *
-     * @param  \Closure  $closureToRun
+     * @param  Closure  $closureToRun
      * @param  bool  $consoleMode
      */
-    private function handleClosure(\Closure $closureToRun, bool $consoleMode): void
+    private function handleClosure(Closure $closureToRun, bool $consoleMode): void
     {
         $output = call_user_func($closureToRun);
 
@@ -123,10 +140,10 @@ abstract class Executor
      * Add a closure to the queue of items that should be
      * executed.
      *
-     * @param  \Closure  $closure
+     * @param  Closure  $closure
      * @return $this
      */
-    public function runClosure(\Closure $closure): self
+    public function runClosure(Closure $closure): self
     {
         $this->commandsToRun[] = $closure;
 
@@ -151,7 +168,7 @@ abstract class Executor
      *
      * @return $this
      */
-    public function resetOutput()
+    private function resetOutput()
     {
         return $this->setOutput('');
     }
@@ -164,7 +181,7 @@ abstract class Executor
      * @param  string  $output
      * @return $this
      */
-    public function setOutput(string $output)
+    private function setOutput(string $output)
     {
         $this->output = $output;
 
@@ -179,7 +196,7 @@ abstract class Executor
      *
      * @return array
      */
-    public function commandsToRun(): array
+    private function commandsToRun(): array
     {
         $this->definition();
 

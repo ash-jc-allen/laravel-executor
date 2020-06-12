@@ -21,6 +21,7 @@
         - [Adding an Artisan Command](#adding-an-artisan-command)
         - [Adding a Command](#adding-a-command)
         - [Adding a Closure](#adding-a-closure)
+        - [Adding Desktop Notifications](#adding-desktop-notifications)
     - [Running the Executor Definitions](#running-the-executor-definitions)
         - [Running via the Console](#running-via-the-console)
         - [Running Manually](#running-manually)
@@ -141,6 +142,34 @@ class AppUpdate extends Executor
     }
 }
 ```
+
+#### Adding Desktop Notifications
+
+If you are running your Executor via the console, you may want to display desktop notifications between some steps. To display
+a desktop notification you can use either ``` ->simpleDesktopNotification() ``` or ``` ->desktopNotification() ```.
+
+By using ``` ->simpleDesktopNotification() ``` you can pass just a title and body that should be displayed. The example below
+shows how to create a simple desktop notification:
+
+```php
+<?php
+
+namespace App\Executor;
+
+use AshAllenDesign\LaravelExecutor\Classes\Executor;
+
+class AppUpdate extends Executor
+{
+    public function definition(): Executor
+    {
+        return $this->simpleDesktopNotification('Notification title', 'Notification body');
+    }
+}
+```
+
+If you want to customise your notification, you can use ``` ->desktopNotification() ``` and pass a ``` Joli\JoliNotif\Notification ```
+object as the parameter. For more information on building these types of notifications, check out the [``` Joli\JoliNotif ```
+documentation here](https://github.com/jolicode/JoliNotif).
 
 ### Running the Executor Definitions
 #### Running via the Console
