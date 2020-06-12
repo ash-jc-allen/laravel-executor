@@ -21,7 +21,8 @@
     "guzzlehttp/guzzle": "^6.3",
     "illuminate/container": "^5.8|^6.0|^7.0",
     "illuminate/cache": "^5.8|^6.0|^7.0",
-    "ext-json": "*"
+    "ext-json": "*",
+    "jolicode/jolinotif": "^2.1"
   },
   "require-dev": {
     "mockery/mockery": "^1.0",
