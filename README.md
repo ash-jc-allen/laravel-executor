@@ -1,5 +1,5 @@
 <p align="center">
-<img src="https://ashallendesign.co.uk/images/custom/laravel-executor-logo.png" width="400">
+<img src="https://ashallendesign.co.uk/images/custom/laravel-executor-logo.png" width="500">
 </p> 
 
 <p align="center">
