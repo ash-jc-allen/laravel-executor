@@ -42,7 +42,7 @@ A Laravel package that simplifies running code and commands when installing or u
 The package has been developed and tested to work with the following minimum requirements:
 
 - PHP 7.2
-- Laravel 5.8
+- Laravel 6
 
 ### Install the Package
 You can install the package via Composer:
