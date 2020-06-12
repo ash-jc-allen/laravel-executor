@@ -1,4 +1,6 @@
-# Laravel Executor 
+<p align="center">
+<img src="https://ashallendesign.co.uk/images/custom/laravel-executor-logo.png" width="400">
+</p> 
 
 <p align="center">
 <a href="https://packagist.org/packages/ashallendesign/laravel-executor"><img src="https://img.shields.io/packagist/v/ashallendesign/laravel-executor.svg?style=flat-square" alt="Latest Version on Packagist"></a>
@@ -251,6 +253,7 @@ Note: A contribution guide will be added soon.
 ## Credits
 
 - [Ash Allen](https://ashallendesign.co.uk)
+- [Jess Pickup](https://jesspickup.co.uk) (Logo)
 - [All Contributors](https://github.com/ash-jc-allen/laravel-executor/graphs/contributors)
 
 ## Changelog
