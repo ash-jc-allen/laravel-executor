@@ -1,5 +1,8 @@
 # Changelog
 
+**v0.2.2:**
+- Updated documentation.
+
 **v0.2.1:**
 - Added the Laravel Executor logo to the desktop notifications and README.
 
