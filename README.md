@@ -240,6 +240,13 @@ class AppUpdate extends Executor
 Assuming that the above Executor class is still using the default command signature, each time the branch is pulled down,
 the following command could be run: ``` php artisan executor:app-update ```.
 
+The image below shows how a simple Executor command could be run. It's only executing ``` composer du -o ``` but demonstrates
+how Laravel Executor can provide feedback with real-time output and desktop notifications.
+
+<p align="center">
+<img src="https://ashallendesign.co.uk/images/custom/executor-desktop-notification.gif">
+</p>
+
 ## Security
 
 If you find any security related issues, please contact me directly at [mail@ashallendesign.co.uk](mailto:mail@ashallendesign.co.uk) to report it.
