@@ -24,9 +24,7 @@ trait DesktopNotifications
      */
     public function desktopNotification(Notification $notification): self
     {
-        $notifier = NotifierFactory::create();
-
-        $notifier->send($notification);
+        $this->notifier->send($notification);
 
         return $this;
     }
