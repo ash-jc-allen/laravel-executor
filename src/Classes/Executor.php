@@ -4,6 +4,8 @@ namespace AshAllenDesign\LaravelExecutor\Classes;
 
 use AshAllenDesign\LaravelExecutor\Traits\DesktopNotifications;
 use Closure;
+use Joli\JoliNotif\Notifier;
+use Joli\JoliNotif\NotifierFactory;
 use Symfony\Component\Process\Process;
 
 abstract class Executor
@@ -16,6 +18,24 @@ abstract class Executor
      * @var string
      */
     private $output = '';
+
+    /**
+     * The notifier used for generating the desktop
+     * notifications.
+     *
+     * @var Notifier|NotifierFactory
+     */
+    private $notifier;
+
+    /**
+     * Executor constructor.
+     *
+     * @param  NotifierFactory|null  $notifierFactory
+     */
+    public function __construct(NotifierFactory $notifierFactory = null)
+    {
+        $this->notifier = $notifierFactory ?? NotifierFactory::create();
+    }
 
     /**
      * Define the commands here that are to be run when
@@ -66,7 +86,7 @@ abstract class Executor
     {
         $output = call_user_func($closureToRun);
 
-        if (app()->runningInConsole()) {
+        if (app()->runningInConsole() && ! app()->runningUnitTests()) {
             echo $output;
         }
 
@@ -87,7 +107,7 @@ abstract class Executor
         $process->setWorkingDirectory(base_path());
 
         $process->run(function ($type, $buffer) {
-            if (app()->runningInConsole()) {
+            if (app()->runningInConsole() && ! app()->runningUnitTests()) {
                 echo $buffer;
             }
         });

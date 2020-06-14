@@ -3,8 +3,6 @@
 namespace AshAllenDesign\LaravelExecutor\Traits;
 
 use Joli\JoliNotif\Notification;
-use Joli\JoliNotif\NotifierFactory;
-use ReflectionClass;
 
 trait DesktopNotifications
 {
@@ -14,7 +12,7 @@ trait DesktopNotifications
      *
      * @var string
      */
-    private $logoPath = __DIR__.'/../../resources/img/logo.png';
+    public $logoPath = __DIR__.'/../../resources/img/logo.png';
 
     /**
      * Add a desktop notification to the Executor queue.
@@ -24,9 +22,7 @@ trait DesktopNotifications
      */
     public function desktopNotification(Notification $notification): self
     {
-        $notifier = NotifierFactory::create();
-
-        $notifier->send($notification);
+        $this->notifier->send($notification);
 
         return $this;
     }
@@ -55,16 +51,13 @@ trait DesktopNotifications
      * executor has been run.
      *
      * @return DesktopNotifications
-     * @throws \ReflectionException
      */
     public function completeNotification(): self
     {
-        $executorName = (new ReflectionClass($this))->getShortName();
-
         return $this->desktopNotification(
             (new Notification())
                 ->setTitle('Executor complete!')
-                ->setBody('The '.$executorName.' executor has been run successfully.')
+                ->setBody('The executor has been run successfully.')
                 ->setIcon($this->logoPath)
         );
     }
