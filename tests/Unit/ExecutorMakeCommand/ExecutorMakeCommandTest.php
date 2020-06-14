@@ -19,7 +19,7 @@ class ExecutorMakeCommandTest extends TestCase
         if (File::exists($executorClass)) {
             unlink($executorClass);
         }
-        
+
         $this->assertFalse(File::exists($executorClass));
 
         Artisan::call('make:executor PackageUnitTestExecutor');
