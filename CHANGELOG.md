@@ -1,5 +1,10 @@
 # Changelog
 
+**v0.3.0:**
+- Removed the ``` ->definition() ``` method from the Executors.
+- Code refactoring and simplification.
+- Added unit tests.
+
 **v0.2.2:**
 - Updated documentation.
 
