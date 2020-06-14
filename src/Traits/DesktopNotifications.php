@@ -52,16 +52,13 @@ trait DesktopNotifications
      * executor has been run.
      *
      * @return DesktopNotifications
-     * @throws \ReflectionException
      */
     public function completeNotification(): self
     {
-        $executorName = (new ReflectionClass($this))->getShortName();
-
         return $this->desktopNotification(
             (new Notification())
                 ->setTitle('Executor complete!')
-                ->setBody('The '.$executorName.' executor has been run successfully.')
+                ->setBody('The executor has been run successfully.')
                 ->setIcon($this->logoPath)
         );
     }
