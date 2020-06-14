@@ -8,35 +8,25 @@ use Illuminate\Support\Facades\File;
 
 class ExecutorMakeCommandTest extends TestCase
 {
-    /**
-     * @var string
-     */
-    private $executorClass;
-
-    public function setUp(): void
+    /** @test */
+    public function executor_can_be_created_with_the_command()
     {
-        parent::setUp();
-
-        $this->executorClass = app_path('Executor/PackageUnitTestExecutor.php');
+        $executorClass = app_path('Executor/PackageUnitTestExecutor.php');
 
         // Delete the executor and it's command if it exists
         // so that we can be sure we have a new slate for
         // testing.
-        if (File::exists($this->executorClass)) {
-            unlink($this->executorClass);
+        if (File::exists($executorClass)) {
+            unlink($executorClass);
         }
-    }
-
-    /** @test */
-    public function executor_can_be_created_with_the_command()
-    {
-        $this->assertFalse(File::exists($this->executorClass));
+        
+        $this->assertFalse(File::exists($executorClass));
 
         Artisan::call('make:executor PackageUnitTestExecutor');
 
-        $this->assertTrue(File::exists($this->executorClass));
+        $this->assertTrue(File::exists($executorClass));
 
-        $this->assertEquals($this->expectedExecutorFileContents(), file_get_contents($this->executorClass));
+        $this->assertEquals($this->expectedExecutorFileContents(), file_get_contents($executorClass));
     }
 
     private function expectedExecutorFileContents(): string

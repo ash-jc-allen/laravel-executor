@@ -3,7 +3,6 @@
 namespace AshAllenDesign\LaravelExecutor\Traits;
 
 use Joli\JoliNotif\Notification;
-use ReflectionClass;
 
 trait DesktopNotifications
 {
