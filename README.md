@@ -4,6 +4,7 @@
 
 <p align="center">
 <a href="https://packagist.org/packages/ashallendesign/laravel-executor"><img src="https://img.shields.io/packagist/v/ashallendesign/laravel-executor.svg?style=flat-square" alt="Latest Version on Packagist"></a>
+<a href="https://travis-ci.org/ash-jc-allen/laravel-executor"><img src="https://img.shields.io/travis/ash-jc-allen/laravel-executor/master.svg?style=flat-square" alt="Build Status"></a>
 <a href="https://packagist.org/packages/ashallendesign/laravel-executor"><img src="https://img.shields.io/packagist/dt/ashallendesign/laravel-executor.svg?style=flat-square" alt="Total Downloads"></a>
 <a href="https://packagist.org/packages/ashallendesign/laravel-executor"><img src="https://img.shields.io/packagist/php-v/ashallendesign/laravel-executor?style=flat-square" alt="PHP from Packagist"></a>
 <a href="https://github.com/ash-jc-allen/laravel-executor/blob/master/LICENSE"><img src="https://img.shields.io/github/license/ash-jc-allen/laravel-executor?style=flat-square" alt="GitHub license"></a>
@@ -16,15 +17,15 @@
     - [Requirements](#requirements)
     - [Install the Package](#install-the-package)
 - [Usage](#usage)
-    - [Creating an Executor Definition](#creating-an-executor-definition)
-        - [Creating a Definition](#creating-a-definition)
-        - [Creating a Definition with a Command](#creating-a-definition-with-a-command)
-    - [Updating an Executor Definition](#updating-an-executor-definition)
+    - [Creating an Executor](#creating-an-executor)
+        - [Creating a New Executor](#creating-a-new-executor)
+        - [Creating an Executor with a Command](#creating-an-executor-with-a-command)
+    - [Updating an Executor](#updating-an-executor)
         - [Adding an Artisan Command](#adding-an-artisan-command)
         - [Adding a Command](#adding-a-command)
         - [Adding a Closure](#adding-a-closure)
         - [Adding Desktop Notifications](#adding-desktop-notifications)
-    - [Running the Executor Definitions](#running-the-executor-definitions)
+    - [Running the Executors](#running-the-executors)
         - [Running via the Console](#running-via-the-console)
         - [Running Manually](#running-manually)
 - [Examples](#examples)
@@ -54,9 +55,9 @@ composer require ashallendesign/laravel-executor
 ```
 
 ## Usage
-### Creating an Executor Definition
-#### Creating a Definition
-To create a new Executor definition, you can use the following command:
+### Creating an Executor
+#### Creating a New Executor
+To create a new Executor, you can use the following command:
 
 ```bash
 php artisan make:executor YourExecutorNameHere
@@ -65,24 +66,23 @@ php artisan make:executor YourExecutorNameHere
 The above command would create an Executor named ``` YourExecutorNameHere ``` that can be found in the ``` app/Executor ```
 folder.
 
-#### Creating a Definition with a Command
-Generally, Executor definitions are expected to be run within a console. So, when creating a new Executor definition, if
-you intend for it to be run in the console, you can use the following command:
+#### Creating an Executor with a Command
+Generally, Executors are expected to be run within a console. So, when creating a new Executor, if you intend for it to
+be run in the console, you can use the following command:
 
 ```bash
 php artisan make:executor YourExecutorNameHere -c
 ```
 
-The command above will create the exact same boilerplate for your new definition as the command in [Creating a Definition](#creating-a-definition).
+The command above will create the exact same boilerplate for your new Executor as the command in [Creating a New Executor](#creating-a-new-executor).
 However, it will create a new command in your ``` app/Commands ``` folder named ``` RunYourExecutorNameHereExecutor ```.
-This means that you won't need a new command manually to run your executor and you will be able to start adding the definition
-right away.
+This means that you won't need a new command manually to run your executor.
 
-Learn more in [Running via the Console](#running-via-the-console) to find out how to run the definition inside the commands.
+Learn more in [Running via the Console](#running-via-the-console) to find out how to run the Executor inside the commands.
 
-### Updating an Executor Definition
+### Updating an Executor
 #### Adding an Artisan Command
-To run an Artisan command via your Executor class, you can add the ``` runArtisan() ``` method to your Executor's ``` definition() ```
+To run an Artisan command via your Executor class, you can add the ``` runArtisan() ``` method to your Executor's ``` run() ```
 method. For example, the code below shows how you could set the Executor to run the built-in Laravel ``` php artisan cache:clear ```
 command:
 
@@ -95,7 +95,7 @@ use AshAllenDesign\LaravelExecutor\Classes\Executor;
 
 class AppUpdate extends Executor
 {
-    public function definition(): Executor
+    public function run(): Executor
     {
         return $this->runArtisan('cache:clear');
     }
@@ -103,7 +103,7 @@ class AppUpdate extends Executor
 ```
 
 #### Adding a Command
-To run a command (that can't be run with Artisan) via your Executor class, you can add the ``` runExternal() ``` method to your Executor's ``` definition() ```
+To run a command (that can't be run with Artisan) via your Executor class, you can add the ``` runExternal() ``` method to your Executor's ``` run() ```
 method. For example, the code below shows how you could set the Executor to run the built-in Composer ``` composer install ```
 command:
 
@@ -116,7 +116,7 @@ use AshAllenDesign\LaravelExecutor\Classes\Executor;
 
 class AppUpdate extends Executor
 {
-    public function definition(): Executor
+    public function run(): Executor
     {
         return $this->runExternal('composer install');
     }
@@ -125,7 +125,7 @@ class AppUpdate extends Executor
 
 #### Adding a Closure
 Sometimes you might want to run some code that doesn't necessarily fit into an existing command. In this case, you can add a closure
-to your definition file instead. The example below shows how to pass a simple closure to your Executor definition:
+to your Executor instead. The example below shows how to pass a simple closure to your Executor class:
 
 ```php
 <?php
@@ -136,7 +136,7 @@ use AshAllenDesign\LaravelExecutor\Classes\Executor;
 
 class AppUpdate extends Executor
 {
-    public function definition(): Executor
+    public function run(): Executor
     {
         return $this->runClosure(function () {
             return 'I am running inside a closure.';
@@ -162,7 +162,7 @@ use AshAllenDesign\LaravelExecutor\Classes\Executor;
 
 class AppUpdate extends Executor
 {
-    public function definition(): Executor
+    public function run(): Executor
     {
         return $this->simpleDesktopNotification('Notification title', 'Notification body');
     }
@@ -173,16 +173,19 @@ If you want to customise your notification, you can use ``` ->desktopNotificatio
 object as the parameter. For more information on building these types of notifications, check out the [``` Joli\JoliNotif ```
 documentation here](https://github.com/jolicode/JoliNotif).
 
-### Running the Executor Definitions
+You can also add the ``` ->completeNotification() ``` to your Executor so that a desktop notification can be displayed
+once all the code inside the class has been run.
+
+### Running the Executors
 #### Running via the Console
 As mentioned above, Executors are mainly intended for being run from within the console. This makes them ideal for adding
 to deploy scripts; such as the ones that can be found one Laravel Forge and Runcloud.
 
-If you created a command at the same time as the Executor class by using the command above found in [Creating a Definition with a Command](#creating-a-definition-with-a-command),
+If you created a command at the same time as the Executor class by using the command above found in [Creating an Executor with a Command](#creating-an-executor-with-a-command),
 your command will already have been given a signature. The signature is created by converting the Executor's classname into kebab case.
 For example, an Executor with the name ``` AppInstall ``` will be given the command signature of ``` executor:app-install ```.
 
-The example below shows how a command (that has been unaltered) can be run to execute the definition found in ``` AppInstall ```:
+The example below shows how a command (that has been unaltered) can be run the ``` AppInstall ``` Executor:
 
 ```bash
 php artisan executor:app-install
@@ -211,9 +214,6 @@ class Controller
 }
 ```
 
-Note: passing ``` true ``` to the ``` ->run() ``` method will put the Executor into 'console mode'. This mode is used for
-the class is being run via the terminal and real-time output is needed to be printed to the screen.
-
 ## Examples
 The example below shows how to create an Executor class that can be run after pulling a new branch of project down from
 a remote repository:
@@ -227,12 +227,13 @@ use AshAllenDesign\LaravelExecutor\Classes\Executor;
 
 class AppUpdate extends Executor
 {
-    public function definition(): Executor
+    public function run(): Executor
     {
         return $this->simpleDesktopNotification('Starting Executor', 'Starting the AppUpdate Executor.')
                     ->runExternal('composer install')
                     ->runArtisan('migrate')
-                    ->runArtisan('cache:clear');
+                    ->runArtisan('cache:clear')
+                    ->completeNotification();
     }
 }
 ```
