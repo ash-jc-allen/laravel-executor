@@ -24,7 +24,9 @@ trait DesktopNotifications
      */
     public function desktopNotification(Notification $notification): self
     {
-        $this->commandsToRun[] = $notification;
+        $notifier = NotifierFactory::create();
+
+        $notifier->send($notification);
 
         return $this;
     }
@@ -45,37 +47,25 @@ trait DesktopNotifications
             ->setBody($body)
             ->setIcon($this->logoPath);
 
-        $this->desktopNotification($notification);
-
-        return $this;
-    }
-
-    /**
-     * Display the desktop notification to the user.
-     *
-     * @param  Notification  $notification
-     */
-    private function displayNotification(Notification $notification): void
-    {
-        $notifier = NotifierFactory::create();
-
-        $notifier->send($notification);
+        return $this->desktopNotification($notification);
     }
 
     /**
      * A notification that can be displayed once the entire
      * executor has been run.
      *
-     * @return Notification
+     * @return DesktopNotifications
      * @throws \ReflectionException
      */
-    private function executorCompleteNotification(): Notification
+    public function completeNotification(): self
     {
         $executorName = (new ReflectionClass($this))->getShortName();
 
-        return (new Notification())
-            ->setTitle('Executor complete!')
-            ->setBody('The '.$executorName.' executor has been run successfully.')
-            ->setIcon($this->logoPath);
+        return $this->desktopNotification(
+            (new Notification())
+                ->setTitle('Executor complete!')
+                ->setBody('The '.$executorName.' executor has been run successfully.')
+                ->setIcon($this->logoPath)
+        );
     }
 }

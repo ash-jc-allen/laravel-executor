@@ -4,8 +4,6 @@ namespace AshAllenDesign\LaravelExecutor\Classes;
 
 use AshAllenDesign\LaravelExecutor\Traits\DesktopNotifications;
 use Closure;
-use Joli\JoliNotif\Notification;
-use ReflectionException;
 use Symfony\Component\Process\Process;
 
 abstract class Executor
@@ -20,93 +18,12 @@ abstract class Executor
     private $output = '';
 
     /**
-     * An array containing all of the commands that should
-     * be run.
-     *
-     * @var array
-     */
-    private $commandsToRun = [];
-
-    /**
      * Define the commands here that are to be run when
      * this executor class is called.
      *
      * @return Executor
      */
-    abstract public function definition(): self;
-
-    /**
-     * Run the commands defined that are in the executor
-     * definition. If $consoleMode is set to true, the
-     * command's output will displayed in realtime.
-     * This is useful for long running commands.
-     *
-     * @param  bool  $consoleMode
-     * @return string
-     * @throws ReflectionException
-     */
-    public function run(bool $consoleMode = false): string
-    {
-        $this->resetOutput();
-
-        foreach ($this->commandsToRun() as $command) {
-            if ($command instanceof Closure) {
-                $this->handleClosure($command, $consoleMode);
-
-                continue;
-            }
-
-            if ($command instanceof Notification) {
-                $this->displayNotification($command);
-
-                continue;
-            }
-
-            $this->handleConsoleCommand($command, $consoleMode);
-        }
-
-        if ($consoleMode) {
-            $this->displayNotification($this->executorCompleteNotification());
-        }
-
-        return $this->getOutput();
-    }
-
-    /**
-     * Handle the running of a closure.
-     *
-     * @param  Closure  $closureToRun
-     * @param  bool  $consoleMode
-     */
-    private function handleClosure(Closure $closureToRun, bool $consoleMode): void
-    {
-        $output = call_user_func($closureToRun);
-
-        if ($consoleMode) {
-            echo $output;
-        }
-
-        $this->setOutput($this->getOutput().$output);
-    }
-
-    /**
-     * Handle the running of a console command.
-     *
-     * @param  string  $commandToRun
-     * @param  bool  $consoleMode
-     */
-    private function handleConsoleCommand(string $commandToRun, bool $consoleMode): void
-    {
-        $process = new Process(explode(' ', $commandToRun));
-
-        $process->run(function ($type, $buffer) use ($consoleMode) {
-            if ($consoleMode) {
-                echo $buffer;
-            }
-        });
-
-        $this->setOutput($this->getOutput().$process->getOutput());
-    }
+    abstract public function run();
 
     /**
      * Add an Artisan command to the queue of items that
@@ -117,7 +34,9 @@ abstract class Executor
      */
     public function runArtisan(string $command): self
     {
-        $this->commandsToRun[] = 'php artisan '.$command;
+        $command = 'php artisan '.$command;
+
+        $this->runCommand($command);
 
         return $this;
     }
@@ -131,7 +50,7 @@ abstract class Executor
      */
     public function runExternal(string $command): self
     {
-        $this->commandsToRun[] = $command;
+        $this->runCommand($command);
 
         return $this;
     }
@@ -140,14 +59,38 @@ abstract class Executor
      * Add a closure to the queue of items that should be
      * executed.
      *
-     * @param  Closure  $closure
+     * @param  Closure  $closureToRun
      * @return $this
      */
-    public function runClosure(Closure $closure): self
+    public function runClosure(Closure $closureToRun): self
     {
-        $this->commandsToRun[] = $closure;
+        $output = call_user_func($closureToRun);
+
+        if (app()->runningInConsole()) {
+            echo $output;
+        }
+
+        $this->setOutput($this->getOutput().$output);
 
         return $this;
+    }
+
+    /**
+     * Handle the running of a console command.
+     *
+     * @param  string  $commandToRun
+     */
+    private function runCommand(string $commandToRun): void
+    {
+        $process = new Process(explode(' ', $commandToRun));
+
+        $process->run(function ($type, $buffer) {
+            if (app()->runningInConsole()) {
+                echo $buffer;
+            }
+        });
+
+        $this->setOutput($this->getOutput().$process->getOutput());
     }
 
     /**
@@ -186,20 +129,5 @@ abstract class Executor
         $this->output = $output;
 
         return $this;
-    }
-
-    /**
-     * Return the array containing the commands that
-     * should be run. We do this by calling the
-     * 'definition' method specified in the
-     * Executor child class.
-     *
-     * @return array
-     */
-    private function commandsToRun(): array
-    {
-        $this->definition();
-
-        return $this->commandsToRun;
     }
 }
