@@ -191,7 +191,7 @@ class ExecutorMakeCommand extends GeneratorCommand
         );
 
         $find = '//';
-        $replaceWith = "(new {$executorClass}())->run(true);";
+        $replaceWith = "(new {$executorClass}())->run();";
 
         return str_replace($find, $replaceWith, $fileContents);
     }

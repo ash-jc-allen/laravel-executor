@@ -12,7 +12,7 @@ class DummyClass extends Executor
      *
      * @return Executor
      */
-    public function definition(): Executor
+    public function run(): Executor
     {
         return $this->runArtisan('');
     }
