@@ -3,7 +3,6 @@
 namespace AshAllenDesign\LaravelExecutor\Traits;
 
 use Joli\JoliNotif\Notification;
-use Joli\JoliNotif\NotifierFactory;
 use ReflectionClass;
 
 trait DesktopNotifications
@@ -14,7 +13,7 @@ trait DesktopNotifications
      *
      * @var string
      */
-    private $logoPath = __DIR__.'/../../resources/img/logo.png';
+    public $logoPath = __DIR__.'/../../resources/img/logo.png';
 
     /**
      * Add a desktop notification to the Executor queue.
