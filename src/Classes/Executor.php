@@ -23,7 +23,7 @@ abstract class Executor
      *
      * @return Executor
      */
-    abstract public function run(): Executor;
+    abstract public function run(): self;
 
     /**
      * Add an Artisan command to the queue of items that
@@ -35,7 +35,7 @@ abstract class Executor
     public function runArtisan(string $command): self
     {
         $command = 'php artisan '.$command;
-        
+
         $this->runCommand($command);
 
         return $this;
