@@ -4,8 +4,10 @@ namespace AshAllenDesign\LaravelExecutor\Tests\Unit\Classes;
 
 use AshAllenDesign\LaravelExecutor\Classes\Executor;
 use AshAllenDesign\LaravelExecutor\Tests\Unit\TestCase;
+use Hamcrest\Matchers;
 use Joli\JoliNotif\Notification;
 use Joli\JoliNotif\NotifierFactory;
+use Mockery;
 
 class ExecutorTest extends TestCase
 {
@@ -28,10 +30,7 @@ class ExecutorTest extends TestCase
     /** @test */
     public function simple_desktop_notification_added_to_the_executor_can_be_run()
     {
-        // TODO: Improve this test!
-
-        $notifierMock = \Mockery::mock(NotifierFactory::class)->makePartial();
-        $notifierMock->expects('send')->once()->withAnyArgs()->andReturnNull();
+        $notifierMock = Mockery::mock(NotifierFactory::class)->makePartial();
 
         $executor = new class($notifierMock) extends Executor {
             public function run(): Executor
@@ -40,16 +39,17 @@ class ExecutorTest extends TestCase
             }
         };
 
+        $notification = (new Notification())->setTitle('Notification title')->setBody('Notification body')->setIcon($executor->logoPath);
+
+        $notifierMock->expects('send')->once()->with(Matchers::equalTo($notification))->andReturnNull();
+
         $executor->run();
     }
 
     /** @test */
     public function completed_notification_can_be_displayed()
     {
-        // TODO: Improve this test!
-
-        $notifierMock = \Mockery::mock(NotifierFactory::class)->makePartial();
-        $notifierMock->expects('send')->once()->withAnyArgs()->andReturnNull();
+        $notifierMock = Mockery::mock(NotifierFactory::class)->makePartial();
 
         $executor = new class($notifierMock) extends Executor {
             public function run(): Executor
@@ -58,16 +58,19 @@ class ExecutorTest extends TestCase
             }
         };
 
+        $notification = (new Notification())->setTitle('Executor complete!')
+            ->setBody('The executor has been run successfully.')
+            ->setIcon($executor->logoPath);
+
+        $notifierMock->expects('send')->once()->with(Matchers::equalTo($notification))->andReturnNull();
+
         $executor->run();
     }
 
     /** @test */
     public function desktop_notification_added_to_the_executor_can_be_run()
     {
-        // TODO: Improve this test!
-
-        $notifierMock = \Mockery::mock(NotifierFactory::class);
-        $notifierMock->expects('send')->once()->withAnyArgs()->andReturnNull();
+        $notifierMock = Mockery::mock(NotifierFactory::class);
 
         $executor = new class($notifierMock) extends Executor {
             public function run(): Executor
@@ -77,6 +80,10 @@ class ExecutorTest extends TestCase
                 );
             }
         };
+
+        $notification = (new Notification())->setTitle('Notification title')->setBody('Notification body');
+
+        $notifierMock->expects('send')->once()->with(Matchers::equalTo($notification))->andReturnNull();
 
         $executor->run();
     }
