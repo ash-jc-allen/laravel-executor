@@ -1,5 +1,8 @@
 # Changelog
 
+**v1.0.0 (released 2020-06-21):**
+- Production release.
+
 **v0.3.0:**
 - Removed the ``` ->definition() ``` method from the Executors.
 - Code refactoring and simplification.
