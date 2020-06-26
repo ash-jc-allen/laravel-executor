@@ -1,5 +1,8 @@
 # Changelog
 
+**v1.0.1 (released 2020-06-26):**
+- Fixed a bug that was preventing any console error messages from being added to the output variable.
+
 **v1.0.0 (released 2020-06-21):**
 - Production release.
 
