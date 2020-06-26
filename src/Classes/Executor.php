@@ -112,7 +112,9 @@ abstract class Executor
             }
         });
 
-        $this->setOutput($this->getOutput().$process->getOutput());
+        $output = $process->isSuccessful() ? $process->getOutput() : $process->getErrorOutput();
+
+        $this->setOutput($this->getOutput().$output);
     }
 
     /**
