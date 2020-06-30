@@ -115,7 +115,7 @@ abstract class Executor
     public function ping(string $url, array $headers = []): self
     {
         $this->httpClient->get($url, [
-            'headers' => $headers
+            'headers' => $headers,
         ]);
 
         return $this;
