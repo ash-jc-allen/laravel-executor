@@ -4,6 +4,7 @@ namespace AshAllenDesign\LaravelExecutor\Tests\Unit\Classes;
 
 use AshAllenDesign\LaravelExecutor\Classes\Executor;
 use AshAllenDesign\LaravelExecutor\Tests\Unit\TestCase;
+use GuzzleHttp\Client;
 use Hamcrest\Matchers;
 use Joli\JoliNotif\Notification;
 use Joli\JoliNotif\NotifierFactory;
@@ -100,5 +101,41 @@ class ExecutorTest extends TestCase
 
         $executor->run();
         $this->assertEquals('ashallendesign', trim($executor->getOutput()));
+    }
+
+    /** @test */
+    public function url_can_be_pinged()
+    {
+        $guzzleMock = Mockery::mock(Client::class)->makePartial();
+        $guzzleMock->expects('get')->withArgs(['localhost', ['headers' => []]])->once();
+
+        $executor = new class(null, $guzzleMock) extends Executor {
+            public function run(): Executor
+            {
+                return $this->ping('localhost');
+            }
+        };
+
+        $executor->run();
+        $this->assertEquals('', trim($executor->getOutput()));
+    }
+
+    /** @test */
+    public function url_can_be_pinged_with_headers()
+    {
+        $guzzleMock = Mockery::mock(Client::class)->makePartial();
+        $guzzleMock->expects('get')
+            ->withArgs(['localhost', ['headers' => ['X-Request-Signature' => 'secret123']]])
+            ->once();
+
+        $executor = new class(null, $guzzleMock) extends Executor {
+            public function run(): Executor
+            {
+                return $this->ping('localhost', ['X-Request-Signature' => 'secret123']);
+            }
+        };
+
+        $executor->run();
+        $this->assertEquals('', trim($executor->getOutput()));
     }
 }
