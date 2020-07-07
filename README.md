@@ -25,6 +25,7 @@
         - [Adding a Command](#adding-a-command)
         - [Adding a Closure](#adding-a-closure)
         - [Adding Desktop Notifications](#adding-desktop-notifications)
+        - [Pinging a URL](#pinging-a-url)
     - [Running the Executors](#running-the-executors)
         - [Running via the Console](#running-via-the-console)
         - [Running Manually](#running-manually)
@@ -175,6 +176,53 @@ documentation here](https://github.com/jolicode/JoliNotif).
 
 You can also add the ``` ->completeNotification() ``` to your Executor so that a desktop notification can be displayed
 once all the code inside the class has been run.
+
+#### Pinging a URL
+
+If you're using your Executor for updating your application on a live server, you might want to ping a URL when it's finished.
+This could be useful for sending a webhook to alert you that the scripts have run successfully. To ping a URL, you can simply
+use the ``` ->ping() ``` method.
+
+The example below shows how to ping a website:
+
+```php
+<?php
+
+namespace App\Executor;
+
+use AshAllenDesign\LaravelExecutor\Classes\Executor;
+
+class AppUpdate extends Executor
+{
+    public function run(): Executor
+    {
+        return $this->ping('https://ashallendesign.co.uk/executor-webhook-route');
+    }
+}
+```
+
+If you want to send headers in your ``` ping() ```, you can pass them as a second parameter. This can be useful for if you
+want to add a signature to your webhook requests to assert that they've been sent from an authorised sender.
+
+The example below shows how to ping a website with headers:
+
+```php
+<?php
+
+namespace App\Executor;
+
+use AshAllenDesign\LaravelExecutor\Classes\Executor;
+
+class AppUpdate extends Executor
+{
+    public function run(): Executor
+    {
+        return $this->ping('https://ashallendesign.co.uk/executor-webhook-route', [
+            'X-Webhook-Signature' => 'secret-signature-to-go-here'
+        ]);
+    }
+}
+```
 
 ### Running the Executors
 #### Running via the Console

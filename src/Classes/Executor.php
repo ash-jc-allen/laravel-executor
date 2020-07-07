@@ -4,6 +4,7 @@ namespace AshAllenDesign\LaravelExecutor\Classes;
 
 use AshAllenDesign\LaravelExecutor\Traits\DesktopNotifications;
 use Closure;
+use GuzzleHttp\Client;
 use Joli\JoliNotif\Notifier;
 use Joli\JoliNotif\NotifierFactory;
 use Symfony\Component\Process\Process;
@@ -28,13 +29,22 @@ abstract class Executor
     private $notifier;
 
     /**
+     * The Guzzle client used for pinging URLs.
+     *
+     * @var Client
+     */
+    private $httpClient;
+
+    /**
      * Executor constructor.
      *
      * @param  NotifierFactory|null  $notifierFactory
+     * @param  Client|null  $httpClient
      */
-    public function __construct(NotifierFactory $notifierFactory = null)
+    public function __construct(NotifierFactory $notifierFactory = null, Client $httpClient = null)
     {
         $this->notifier = $notifierFactory ?? NotifierFactory::create();
+        $this->httpClient = $httpClient ?? new Client();
     }
 
     /**
@@ -91,6 +101,22 @@ abstract class Executor
         }
 
         $this->setOutput($this->getOutput().$output);
+
+        return $this;
+    }
+
+    /**
+     * Make a GET request to the given URL.
+     *
+     * @param  string  $url
+     * @param  array  $headers
+     * @return $this
+     */
+    public function ping(string $url, array $headers = []): self
+    {
+        $this->httpClient->get($url, [
+            'headers' => $headers,
+        ]);
 
         return $this;
     }
