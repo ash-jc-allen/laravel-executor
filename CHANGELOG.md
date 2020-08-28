@@ -1,5 +1,8 @@
 # Changelog
 
+**v1.1.0 (released 2020-07-07):**
+- Added a new ``` ->ping() ``` method to the Executors that can be used to ping a URL.
+
 **v1.0.1 (released 2020-06-26):**
 - Fixed a bug that was preventing any console error messages from being added to the output variable.
 
