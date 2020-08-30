@@ -144,6 +144,7 @@ abstract class Executor
                 // failure
                 $this->setOutput('Interactive command failed');
             }
+            
             return;
         }
 
