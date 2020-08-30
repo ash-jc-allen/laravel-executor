@@ -104,6 +104,20 @@ class ExecutorTest extends TestCase
     }
 
     /** @test */
+    public function interactive_command_added_to_the_executor_can_be_run()
+    {
+        $executor = new class extends Executor {
+            public function run(): Executor
+            {
+                return $this->runExternal('echo anything', true);
+            }
+        };
+
+        $executor->run();
+        $this->assertEquals('Interactive command completed', trim($executor->getOutput()));
+    }
+
+    /** @test */
     public function url_can_be_pinged()
     {
         $guzzleMock = Mockery::mock(Client::class)->makePartial();

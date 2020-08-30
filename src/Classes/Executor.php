@@ -59,14 +59,15 @@ abstract class Executor
      * Add an Artisan command to the queue of items that
      * should be executed.
      *
-     * @param  string  $command
+     * @param string $command
+     * @param bool $isInteractive
      * @return $this
      */
-    public function runArtisan(string $command): self
+    public function runArtisan(string $command, bool $isInteractive = false): self
     {
         $command = 'php artisan '.$command;
 
-        $this->runCommand($command);
+        $this->runCommand($command, $isInteractive);
 
         return $this;
     }
@@ -75,12 +76,13 @@ abstract class Executor
      * Add a command (external to Laravel) to the queue of
      * items that should be executed.
      *
-     * @param  string  $command
+     * @param string $command
+     * @param bool $isInteractive
      * @return $this
      */
-    public function runExternal(string $command): self
+    public function runExternal(string $command, bool $isInteractive = false): self
     {
-        $this->runCommand($command);
+        $this->runCommand($command, $isInteractive);
 
         return $this;
     }
@@ -124,10 +126,27 @@ abstract class Executor
     /**
      * Handle the running of a console command.
      *
-     * @param  string  $commandToRun
+     * @param string $commandToRun
+     * @param bool $isInteractive
      */
-    private function runCommand(string $commandToRun): void
+    private function runCommand(string $commandToRun, bool $isInteractive = false): void
     {
+        if ($isInteractive) {
+            // This function is similar to exec(), However, it sends the raw output from the program to the output stream
+            // with which PHP is currently working (i.e. either HTTP in a web server scenario, or the shell in a command line version of PHP).
+            // for more info see: https://php.net/manual/en/function.passthru.php
+            // use escapeshellcmd() to return the command in a safe format that can be used.
+            passthru(escapeshellcmd($commandToRun), $status);
+            if ($status == 0) {
+                // success
+                $this->setOutput('Interactive command completed');
+            } else {
+                // failure
+                $this->setOutput('Interactive command failed');
+            }
+            return;
+        }
+
         $process = new Process(explode(' ', $commandToRun));
 
         $process->setWorkingDirectory(base_path());
