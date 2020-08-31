@@ -132,18 +132,7 @@ abstract class Executor
     private function runCommand(string $commandToRun, bool $isInteractive = false): void
     {
         if ($isInteractive) {
-            // This function is similar to exec(), However, it sends the raw output from the program to the output stream
-            // with which PHP is currently working (i.e. either HTTP in a web server scenario, or the shell in a command line version of PHP).
-            // for more info see: https://php.net/manual/en/function.passthru.php
-            // use escapeshellcmd() to return the command in a safe format that can be used.
-            passthru(escapeshellcmd($commandToRun), $status);
-            if ($status == 0) {
-                // success
-                $this->setOutput('Interactive command completed');
-            } else {
-                // failure
-                $this->setOutput('Interactive command failed');
-            }
+            $this->runInteractiveCommand($commandToRun);
 
             return;
         }
@@ -161,6 +150,21 @@ abstract class Executor
         $output = $process->isSuccessful() ? $process->getOutput() : $process->getErrorOutput();
 
         $this->setOutput($this->getOutput().$output);
+    }
+
+    /**
+     * Handle the running of an interactive console command.
+     *
+     * @param string $commandToRun
+     */
+    private function runInteractiveCommand(string $commandToRun): void
+    {
+        passthru(escapeshellcmd($commandToRun), $status);
+        if ($status == 0) {
+            $this->setOutput($this->getOutput().' Interactive command completed');
+        } else {
+            $this->setOutput($this->getOutput().' Interactive command failed');
+        }
     }
 
     /**
