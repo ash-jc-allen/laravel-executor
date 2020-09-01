@@ -59,14 +59,15 @@ abstract class Executor
      * Add an Artisan command to the queue of items that
      * should be executed.
      *
-     * @param  string  $command
+     * @param string $command
+     * @param bool $isInteractive
      * @return $this
      */
-    public function runArtisan(string $command): self
+    public function runArtisan(string $command, bool $isInteractive = false): self
     {
         $command = 'php artisan '.$command;
 
-        $this->runCommand($command);
+        $this->runCommand($command, $isInteractive);
 
         return $this;
     }
@@ -75,12 +76,13 @@ abstract class Executor
      * Add a command (external to Laravel) to the queue of
      * items that should be executed.
      *
-     * @param  string  $command
+     * @param string $command
+     * @param bool $isInteractive
      * @return $this
      */
-    public function runExternal(string $command): self
+    public function runExternal(string $command, bool $isInteractive = false): self
     {
-        $this->runCommand($command);
+        $this->runCommand($command, $isInteractive);
 
         return $this;
     }
@@ -124,10 +126,17 @@ abstract class Executor
     /**
      * Handle the running of a console command.
      *
-     * @param  string  $commandToRun
+     * @param string $commandToRun
+     * @param bool $isInteractive
      */
-    private function runCommand(string $commandToRun): void
+    private function runCommand(string $commandToRun, bool $isInteractive = false): void
     {
+        if ($isInteractive) {
+            $this->runInteractiveCommand($commandToRun);
+
+            return;
+        }
+
         $process = new Process(explode(' ', $commandToRun));
 
         $process->setWorkingDirectory(base_path());
@@ -141,6 +150,21 @@ abstract class Executor
         $output = $process->isSuccessful() ? $process->getOutput() : $process->getErrorOutput();
 
         $this->setOutput($this->getOutput().$output);
+    }
+
+    /**
+     * Handle the running of an interactive console command.
+     *
+     * @param string $commandToRun
+     */
+    private function runInteractiveCommand(string $commandToRun): void
+    {
+        passthru(escapeshellcmd($commandToRun), $status);
+        if ($status == 0) {
+            $this->setOutput($this->getOutput().' Interactive command completed');
+        } else {
+            $this->setOutput($this->getOutput().' Interactive command failed');
+        }
     }
 
     /**
