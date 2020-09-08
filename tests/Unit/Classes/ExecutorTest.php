@@ -120,7 +120,7 @@ class ExecutorTest extends TestCase
     }
 
     /** @test */
-    public function interactive_command_cannot_be_run_outside_of_console_mode()
+    public function interactive_external_command_cannot_be_run_outside_of_console_mode()
     {
         $this->expectException(ExecutorException::class);
         $this->expectExceptionMessage('Interactive commands can only be run in the console.');
@@ -131,6 +131,24 @@ class ExecutorTest extends TestCase
             public function run(): Executor
             {
                 return $this->runExternal('echo anything', true);
+            }
+        };
+
+        $executor->run();
+    }
+
+    /** @test */
+    public function interactive_artisan_command_cannot_be_run_outside_of_console_mode()
+    {
+        $this->expectException(ExecutorException::class);
+        $this->expectExceptionMessage('Interactive commands can only be run in the console.');
+
+        App::shouldReceive('runningInConsole')->andReturnFalse();
+
+        $executor = new class extends Executor {
+            public function run(): Executor
+            {
+                return $this->runArtisan('', true);
             }
         };
 
