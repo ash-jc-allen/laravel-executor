@@ -3,9 +3,11 @@
 namespace AshAllenDesign\LaravelExecutor\Tests\Unit\Classes;
 
 use AshAllenDesign\LaravelExecutor\Classes\Executor;
+use AshAllenDesign\LaravelExecutor\Exceptions\ExecutorException;
 use AshAllenDesign\LaravelExecutor\Tests\Unit\TestCase;
 use GuzzleHttp\Client;
 use Hamcrest\Matchers;
+use Illuminate\Support\Facades\App;
 use Joli\JoliNotif\Notification;
 use Joli\JoliNotif\NotifierFactory;
 use Mockery;
@@ -115,6 +117,42 @@ class ExecutorTest extends TestCase
 
         $executor->run();
         $this->assertEquals('Interactive command completed', trim($executor->getOutput()));
+    }
+
+    /** @test */
+    public function interactive_external_command_cannot_be_run_outside_of_console_mode()
+    {
+        $this->expectException(ExecutorException::class);
+        $this->expectExceptionMessage('Interactive commands can only be run in the console.');
+
+        App::shouldReceive('runningInConsole')->andReturnFalse();
+
+        $executor = new class extends Executor {
+            public function run(): Executor
+            {
+                return $this->runExternal('echo anything', true);
+            }
+        };
+
+        $executor->run();
+    }
+
+    /** @test */
+    public function interactive_artisan_command_cannot_be_run_outside_of_console_mode()
+    {
+        $this->expectException(ExecutorException::class);
+        $this->expectExceptionMessage('Interactive commands can only be run in the console.');
+
+        App::shouldReceive('runningInConsole')->andReturnFalse();
+
+        $executor = new class extends Executor {
+            public function run(): Executor
+            {
+                return $this->runArtisan('', true);
+            }
+        };
+
+        $executor->run();
     }
 
     /** @test */
