@@ -130,7 +130,7 @@ class AppUpdate extends Executor
 
 Note: In some cases, you may want to run a command that requires your input. For example, you might have a command that
 creates a new user in the database and need you to input some details. In this case, you can pass ``` true ``` as the second
-parameter to the ``` ->runArtisan() ``` command to specify that it is an interactive command.
+parameter to the ``` ->runExternal() ``` command to specify that it is an interactive command.
 
 #### Adding a Closure
 Sometimes you might want to run some code that doesn't necessarily fit into an existing command. In this case, you can add a closure
