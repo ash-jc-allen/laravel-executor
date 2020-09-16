@@ -1,5 +1,9 @@
 # Changelog
 
+**v2.0.0 (released 2020-09-16):**
+- Added the functionality to run interactive commands. [#9](https://github.com/ash-jc-allen/laravel-executor/pull/9) [#10](https://github.com/ash-jc-allen/laravel-executor/pull/10)
+- Added support for Laravel 8 and Guzzle 7. [#12](https://github.com/ash-jc-allen/laravel-executor/pull/12)
+
 **v1.1.0 (released 2020-07-07):**
 - Added a new ``` ->ping() ``` method to the Executors that can be used to ping a URL.
 
