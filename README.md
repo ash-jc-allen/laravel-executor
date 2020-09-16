@@ -103,6 +103,10 @@ class AppUpdate extends Executor
 }
 ```
 
+Note: In some cases, you may want to run a command that requires your input. For example, you might have a command that
+creates a new user in the database and need you to input some details. In this case, you can pass ``` true ``` as the second
+parameter to the ``` ->runArtisan() ``` command to specify that it is an interactive command.
+
 #### Adding a Command
 To run a command (that can't be run with Artisan) via your Executor class, you can add the ``` runExternal() ``` method to your Executor's ``` run() ```
 method. For example, the code below shows how you could set the Executor to run the built-in Composer ``` composer install ```
@@ -123,6 +127,10 @@ class AppUpdate extends Executor
     }
 }
 ```
+
+Note: In some cases, you may want to run a command that requires your input. For example, you might have a command that
+creates a new user in the database and need you to input some details. In this case, you can pass ``` true ``` as the second
+parameter to the ``` ->runArtisan() ``` command to specify that it is an interactive command.
 
 #### Adding a Closure
 Sometimes you might want to run some code that doesn't necessarily fit into an existing command. In this case, you can add a closure
@@ -309,6 +317,7 @@ Note: A contribution guide will be added soon.
 ## Credits
 
 - [Ash Allen](https://ashallendesign.co.uk)
+- [Ahmad Masabni](https://github.com/masabni)
 - [Jess Pickup](https://jesspickup.co.uk) (Logo)
 - [All Contributors](https://github.com/ash-jc-allen/laravel-executor/graphs/contributors)
 
