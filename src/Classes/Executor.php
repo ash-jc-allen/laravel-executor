@@ -2,9 +2,11 @@
 
 namespace AshAllenDesign\LaravelExecutor\Classes;
 
+use AshAllenDesign\LaravelExecutor\Exceptions\ExecutorException;
 use AshAllenDesign\LaravelExecutor\Traits\DesktopNotifications;
 use Closure;
 use GuzzleHttp\Client;
+use Illuminate\Support\Facades\App;
 use Joli\JoliNotif\Notifier;
 use Joli\JoliNotif\NotifierFactory;
 use Symfony\Component\Process\Process;
@@ -60,13 +62,17 @@ abstract class Executor
      * should be executed.
      *
      * @param  string  $command
+     * @param  bool  $isInteractive
      * @return $this
+     * @throws ExecutorException
      */
-    public function runArtisan(string $command): self
+    public function runArtisan(string $command, bool $isInteractive = false): self
     {
+        $this->validateCommand($command, $isInteractive);
+
         $command = 'php artisan '.$command;
 
-        $this->runCommand($command);
+        $this->runCommand($command, $isInteractive);
 
         return $this;
     }
@@ -76,11 +82,15 @@ abstract class Executor
      * items that should be executed.
      *
      * @param  string  $command
+     * @param  bool  $isInteractive
      * @return $this
+     * @throws ExecutorException
      */
-    public function runExternal(string $command): self
+    public function runExternal(string $command, bool $isInteractive = false): self
     {
-        $this->runCommand($command);
+        $this->validateCommand($command, $isInteractive);
+
+        $this->runCommand($command, $isInteractive);
 
         return $this;
     }
@@ -124,10 +134,17 @@ abstract class Executor
     /**
      * Handle the running of a console command.
      *
-     * @param  string  $commandToRun
+     * @param string $commandToRun
+     * @param bool $isInteractive
      */
-    private function runCommand(string $commandToRun): void
+    private function runCommand(string $commandToRun, bool $isInteractive = false): void
     {
+        if ($isInteractive) {
+            $this->runInteractiveCommand($commandToRun);
+
+            return;
+        }
+
         $process = new Process(explode(' ', $commandToRun));
 
         $process->setWorkingDirectory(base_path());
@@ -141,6 +158,43 @@ abstract class Executor
         $output = $process->isSuccessful() ? $process->getOutput() : $process->getErrorOutput();
 
         $this->setOutput($this->getOutput().$output);
+    }
+
+    /**
+     * Handle the running of an interactive console command.
+     *
+     * @param string $commandToRun
+     */
+    private function runInteractiveCommand(string $commandToRun): void
+    {
+        passthru(escapeshellcmd($commandToRun), $status);
+
+        if ($status == 0) {
+            $this->setOutput($this->getOutput().' Interactive command completed');
+        } else {
+            $this->setOutput($this->getOutput().' Interactive command failed');
+        }
+    }
+
+    /**
+     * Validate whether if the command can be run. We check
+     * that an interactive command can only be run inside
+     * the console. This is because there would be no
+     * way for a user to interact with the command
+     * if it is was running through a controller.
+     *
+     * @param  string  $command
+     * @param  bool  $isInteractive
+     * @return bool
+     * @throws ExecutorException
+     */
+    private function validateCommand(string $command, bool $isInteractive): bool
+    {
+        if (! App::runningInConsole() && $isInteractive) {
+            throw new ExecutorException('Interactive commands can only be run in the console.');
+        }
+
+        return true;
     }
 
     /**
