@@ -146,7 +146,7 @@ abstract class Executor
         }
 
         $process = new Process(explode(' ', $commandToRun));
-
+        $process->setTimeout(3600);
         $process->setWorkingDirectory(base_path());
 
         $process->run(function ($type, $buffer) {
