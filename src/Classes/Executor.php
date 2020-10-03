@@ -1,6 +1,6 @@
 <?php
 
-namespace AshAllenDesign\LaravelExecutor\Classes;
+namespace Laravel\LaravelExecutor\Classes;
 
 use AshAllenDesign\LaravelExecutor\Exceptions\ExecutorException;
 use AshAllenDesign\LaravelExecutor\Traits\DesktopNotifications;
@@ -66,13 +66,13 @@ abstract class Executor
      * @return $this
      * @throws ExecutorException
      */
-    public function runArtisan(string $command, bool $isInteractive = false): self
+    public function runArtisan(string $command, bool $isInteractive = false, ?float $timeOut = 60): self
     {
         $this->validateCommand($command, $isInteractive);
 
         $command = 'php artisan '.$command;
 
-        $this->runCommand($command, $isInteractive);
+        $this->runCommand($command, $isInteractive,$timeOut);
 
         return $this;
     }
@@ -86,11 +86,11 @@ abstract class Executor
      * @return $this
      * @throws ExecutorException
      */
-    public function runExternal(string $command, bool $isInteractive = false): self
+    public function runExternal(string $command, bool $isInteractive = false, ?float $timeOut = 60): self
     {
         $this->validateCommand($command, $isInteractive);
 
-        $this->runCommand($command, $isInteractive);
+        $this->runCommand($command, $isInteractive,$timeOut);
 
         return $this;
     }
@@ -137,7 +137,7 @@ abstract class Executor
      * @param string $commandToRun
      * @param bool $isInteractive
      */
-    private function runCommand(string $commandToRun, bool $isInteractive = false): void
+    private function runCommand(string $commandToRun, bool $isInteractive = false, ?float $timeOut = 60): void
     {
         if ($isInteractive) {
             $this->runInteractiveCommand($commandToRun);
@@ -146,7 +146,7 @@ abstract class Executor
         }
 
         $process = new Process(explode(' ', $commandToRun));
-        $process->setTimeout(3600);
+        $process->setTimeout($timeOut);
         $process->setWorkingDirectory(base_path());
 
         $process->run(function ($type, $buffer) {
