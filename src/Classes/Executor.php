@@ -146,7 +146,6 @@ abstract class Executor
             $this->runInteractiveCommand($commandToRun);
 
             return;
-
         }
 
         $process = new Process(explode(' ', $commandToRun));
