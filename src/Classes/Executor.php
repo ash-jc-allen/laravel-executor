@@ -70,7 +70,7 @@ abstract class Executor
     {
         $this->validateCommand($command, $isInteractive);
 
-        $command = 'php artisan ' .$command;
+        $command = 'php artisan '.$command;
 
         $this->runCommand($command, $isInteractive, $timeOut);
 
