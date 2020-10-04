@@ -146,10 +146,13 @@ abstract class Executor
             $this->runInteractiveCommand($commandToRun);
 
             return;
+
         }
 
         $process = new Process(explode(' ', $commandToRun));
+
         $process->setTimeout($timeOut);
+
         $process->setWorkingDirectory(base_path());
 
         $process->run(function ($type, $buffer) {
