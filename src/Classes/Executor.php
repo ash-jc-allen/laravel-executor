@@ -40,8 +40,8 @@ abstract class Executor
     /**
      * Executor constructor.
      *
-     * @param NotifierFactory|null $notifierFactory
-     * @param Client|null $httpClient
+     * @param  NotifierFactory|null  $notifierFactory
+     * @param  Client|null  $httpClient
      */
     public function __construct(NotifierFactory $notifierFactory = null, Client $httpClient = null)
     {
@@ -61,8 +61,8 @@ abstract class Executor
      * Add an Artisan command to the queue of items that
      * should be executed.
      *
-     * @param string $command
-     * @param bool $isInteractive
+     * @param  string  $command
+     * @param  bool  $isInteractive
      * @return $this
      * @throws ExecutorException
      */
@@ -81,8 +81,8 @@ abstract class Executor
      * Add a command (external to Laravel) to the queue of
      * items that should be executed.
      *
-     * @param string $command
-     * @param bool $isInteractive
+     * @param  string  $command
+     * @param  bool  $isInteractive
      * @return $this
      * @throws ExecutorException
      */
@@ -99,7 +99,7 @@ abstract class Executor
      * Add a closure to the queue of items that should be
      * executed.
      *
-     * @param Closure $closureToRun
+     * @param  Closure  $closureToRun
      * @return $this
      */
     public function runClosure(Closure $closureToRun): self
@@ -118,8 +118,8 @@ abstract class Executor
     /**
      * Make a GET request to the given URL.
      *
-     * @param string $url
-     * @param array $headers
+     * @param  string  $url
+     * @param  array  $headers
      * @return $this
      */
     public function ping(string $url, array $headers = []): self
@@ -135,7 +135,7 @@ abstract class Executor
      * Handle the running of a console command.
      *
      * @param string $commandToRun
-     * @param bool $isInteractive
+     * @param  bool  $isInteractive
      */
     private function runCommand(string $commandToRun, bool $isInteractive = false, ?float $timeOut = 60): void
     {
@@ -183,8 +183,8 @@ abstract class Executor
      * way for a user to interact with the command
      * if it is was running through a controller.
      *
-     * @param string $command
-     * @param bool $isInteractive
+     * @param  string  $command
+     * @param  bool  $isInteractive
      * @return bool
      * @throws ExecutorException
      */
@@ -225,7 +225,7 @@ abstract class Executor
      * for after we have run a command and want to
      * store the output of it.
      *
-     * @param string $output
+     * @param  string  $output
      * @return $this
      */
     private function setOutput(string $output)
