@@ -1,6 +1,6 @@
 <?php
 
-namespace Laravel\LaravelExecutor\Classes;
+namespace AshAllenDesign\LaravelExecutor\Classes;
 
 use AshAllenDesign\LaravelExecutor\Exceptions\ExecutorException;
 use AshAllenDesign\LaravelExecutor\Traits\DesktopNotifications;
