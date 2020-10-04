@@ -70,7 +70,7 @@ abstract class Executor
     {
         $this->validateCommand($command, $isInteractive);
 
-        $command = 'php artisan ' . $command;
+        $command = 'php artisan ' .$command;
 
         $this->runCommand($command, $isInteractive, $timeOut);
 
@@ -106,11 +106,11 @@ abstract class Executor
     {
         $output = call_user_func($closureToRun);
 
-        if (app()->runningInConsole() && !app()->runningUnitTests()) {
+        if (app()->runningInConsole() && ! app()->runningUnitTests()) {
             echo $output;
         }
 
-        $this->setOutput($this->getOutput() . $output);
+        $this->setOutput($this->getOutput().$output);
 
         return $this;
     }
@@ -150,14 +150,14 @@ abstract class Executor
         $process->setWorkingDirectory(base_path());
 
         $process->run(function ($type, $buffer) {
-            if (app()->runningInConsole() && !app()->runningUnitTests()) {
+            if (app()->runningInConsole() && ! app()->runningUnitTests()) {
                 echo $buffer;
             }
         });
 
         $output = $process->isSuccessful() ? $process->getOutput() : $process->getErrorOutput();
 
-        $this->setOutput($this->getOutput() . $output);
+        $this->setOutput($this->getOutput().$output);
     }
 
     /**
@@ -170,9 +170,9 @@ abstract class Executor
         passthru(escapeshellcmd($commandToRun), $status);
 
         if ($status == 0) {
-            $this->setOutput($this->getOutput() . ' Interactive command completed');
+            $this->setOutput($this->getOutput().' Interactive command completed');
         } else {
-            $this->setOutput($this->getOutput() . ' Interactive command failed');
+            $this->setOutput($this->getOutput().' Interactive command failed');
         }
     }
 
@@ -190,7 +190,7 @@ abstract class Executor
      */
     private function validateCommand(string $command, bool $isInteractive): bool
     {
-        if (!App::runningInConsole() && $isInteractive) {
+        if (! App::runningInConsole() && $isInteractive) {
             throw new ExecutorException('Interactive commands can only be run in the console.');
         }
 
