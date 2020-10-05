@@ -1,5 +1,8 @@
 # Changelog
 
+**v2.1.0 (released 2020-10-05):**
+- Added a timeOut option for the Artisan and external commands.  [#14](https://github.com/ash-jc-allen/laravel-executor/pull/14)
+
 **v2.0.0 (released 2020-09-16):**
 - Added the functionality to run interactive commands. [#9](https://github.com/ash-jc-allen/laravel-executor/pull/9) [#10](https://github.com/ash-jc-allen/laravel-executor/pull/10)
 - Added support for Laravel 8 and Guzzle 7. [#12](https://github.com/ash-jc-allen/laravel-executor/pull/12)

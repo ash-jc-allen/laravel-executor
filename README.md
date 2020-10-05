@@ -103,9 +103,12 @@ class AppUpdate extends Executor
 }
 ```
 
-Note: In some cases, you may want to run a command that requires your input. For example, you might have a command that
+In some cases, you may want to run a command that requires your input. For example, you might have a command that
 creates a new user in the database and need you to input some details. In this case, you can pass ``` true ``` as the second
 parameter to the ``` ->runArtisan() ``` method to specify that it is an interactive command.
+
+To determine the process timeout for the command, you can also pass a time in seconds as the third parameter to the
+``` ->runArtisan() ``` method.
 
 #### Adding a Command
 To run a command (that can't be run with Artisan) via your Executor class, you can add the ``` runExternal() ``` method to your Executor's ``` run() ```
@@ -128,9 +131,13 @@ class AppUpdate extends Executor
 }
 ```
 
-Note: In some cases, you may want to run a command that requires your input. For example, you might have a command that
+In some cases, you may want to run a command that requires your input. For example, you might have a command that
 creates a new user in the database and need you to input some details. In this case, you can pass ``` true ``` as the second
 parameter to the ``` ->runExternal() ``` method to specify that it is an interactive command.
+
+To determine the process timeout for the command, you can also pass a time in seconds as the third parameter to the
+``` ->runExternal() ``` method.
+
 
 #### Adding a Closure
 Sometimes you might want to run some code that doesn't necessarily fit into an existing command. In this case, you can add a closure
