@@ -62,12 +62,12 @@ abstract class Executor
      * should be executed.
      *
      * @param  string  $command
-     * @param  float  $timeOut
+     * @param  int  $timeOut
      * @param  bool  $isInteractive
      * @return $this
      * @throws ExecutorException
      */
-    public function runArtisan(string $command, bool $isInteractive = false, float $timeOut = 60): self
+    public function runArtisan(string $command, bool $isInteractive = false, int $timeOut = 60): self
     {
         $this->validateCommand($command, $isInteractive);
 
@@ -83,12 +83,12 @@ abstract class Executor
      * items that should be executed.
      *
      * @param  string  $command
-     * @param  float  $timeOut
+     * @param  int  $timeOut
      * @param  bool  $isInteractive
      * @return $this
      * @throws ExecutorException
      */
-    public function runExternal(string $command, bool $isInteractive = false, float $timeOut = 60): self
+    public function runExternal(string $command, bool $isInteractive = false, int $timeOut = 60): self
     {
         $this->validateCommand($command, $isInteractive);
 
@@ -136,11 +136,11 @@ abstract class Executor
     /**
      * Handle the running of a console command.
      *
-     * @param string $commandToRun
-     * @param float $timeOut
+     * @param  string  $commandToRun
+     * @param  int  $timeOut
      * @param  bool  $isInteractive
      */
-    private function runCommand(string $commandToRun, bool $isInteractive = false, float $timeOut = 60): void
+    private function runCommand(string $commandToRun, bool $isInteractive = false, int $timeOut = 60): void
     {
         if ($isInteractive) {
             $this->runInteractiveCommand($commandToRun);
@@ -168,7 +168,7 @@ abstract class Executor
     /**
      * Handle the running of an interactive console command.
      *
-     * @param string $commandToRun
+     * @param  string  $commandToRun
      */
     private function runInteractiveCommand(string $commandToRun): void
     {
