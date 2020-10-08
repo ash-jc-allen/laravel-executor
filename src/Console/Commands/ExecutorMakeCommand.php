@@ -175,8 +175,11 @@ class ExecutorMakeCommand extends GeneratorCommand
     }
 
     /**
-     * Replace the handle() method body to run the
-     * executor file.
+     * Replace the handle() method body to run the Executor
+     * file. From Laravel 7 onwards, the handle() method
+     * body stub is different to than previous
+     * versions, so we need to check this
+     * when inserting.
      *
      * @param  string  $fileContents
      * @return string
@@ -190,8 +193,13 @@ class ExecutorMakeCommand extends GeneratorCommand
             '\\'.$this->getDefaultNamespace($this->rootNamespace()).'\\'.$this->argument('name')
         );
 
-        $find = '//';
-        $replaceWith = "(new {$executorClass}())->run();";
+        $find = app()->version() < 7
+            ? '//'
+            : 'return 0;';
+
+        $replaceWith = app()->version() < 7
+            ? "(new {$executorClass}())->run();"
+            : "(new {$executorClass}())->run();\r\n\r\n        return 0;";
 
         return str_replace($find, $replaceWith, $fileContents);
     }
