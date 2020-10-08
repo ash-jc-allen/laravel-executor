@@ -1,5 +1,8 @@
 # Changelog
 
+**v2.1.1 (released 2020-10-08):**
+- Fixed a bug affecting Laravel 7 and newer that prevented the generator command from replacing the ``` handle() ``` method correctly. [#17](https://github.com/ash-jc-allen/laravel-executor/pull/17)
+
 **v2.1.0 (released 2020-10-05):**
 - Added a timeOut option for the Artisan and external commands.  [#14](https://github.com/ash-jc-allen/laravel-executor/pull/14)
 
