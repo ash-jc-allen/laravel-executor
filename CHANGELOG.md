@@ -1,5 +1,8 @@
 # Changelog
 
+**v2.2.2 (released 2020-12-06):**
+- Added support for PHP 8. [#18](https://github.com/ash-jc-allen/laravel-executor/pull/18)
+
 **v2.1.1 (released 2020-10-08):**
 - Fixed a bug affecting Laravel 7 and newer that prevented the generator command from replacing the ``` handle() ``` method correctly. [#17](https://github.com/ash-jc-allen/laravel-executor/pull/17)
 
