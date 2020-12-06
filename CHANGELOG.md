@@ -1,6 +1,6 @@
 # Changelog
 
-**v2.2.2 (released 2020-12-06):**
+**v2.2.0 (released 2020-12-06):**
 - Added support for PHP 8. [#18](https://github.com/ash-jc-allen/laravel-executor/pull/18)
 
 **v2.1.1 (released 2020-10-08):**
